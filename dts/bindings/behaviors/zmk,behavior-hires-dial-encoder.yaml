@@ -1,0 +1,28 @@
+# Copyright (c) 2026 sekigon-gonnoc
+# SPDX-License-Identifier: MIT
+
+description: High-resolution dial encoder behavior
+
+compatible: "zmk,behavior-hires-dial-encoder"
+
+properties:
+  "#sensor-binding-cells":
+    type: int
+    required: true
+    const: 2
+  bindings:
+    type: phandles
+    required: true
+  sensor:
+    type: phandle
+    required: true
+    description: PAT912x high-resolution dial sensor providing counts-per-revolution.
+  tap-ms:
+    type: int
+    default: 5
+
+sensor-binding-cells:
+  # ZMK's sensor keymap parser reads these canonical cell names into
+  # zmk_behavior_binding.param1 and param2.
+  - param1
+  - param2

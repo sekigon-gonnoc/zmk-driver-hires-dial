@@ -1,0 +1,45 @@
+menuconfig ZMK_HIRES_DIAL
+    bool "High-resolution ZMK dial"
+    default y
+    depends on DT_HAS_SEKIGON_HIRES_DIAL_ENABLED
+    depends on SENSOR && GPIO
+    select I2C
+    help
+      Enable a high-resolution dial and its encoder behavior.
+
+if ZMK_HIRES_DIAL
+
+config ZMK_HIRES_DIAL_BEHAVIOR_INIT_PRIORITY
+    int
+    default 91
+    help
+      Initialization priority for behaviors which reference the dial sensor.
+      This must be greater than SENSOR_INIT_PRIORITY (90 by default).
+
+config ZMK_HIRES_DIAL_SCROLL
+    bool "High-resolution dial scrolling"
+    default n
+    depends on ZMK_POINTING
+    help
+      Allow dial sensor bindings to emit standard vertical or horizontal
+      wheel input events. This works with both regular and smooth ZMK scrolling.
+
+config ZMK_HIRES_DIAL_RADIAL_CONTROLLER
+    bool "Windows Radial Controller support"
+    default n
+    help
+      Expose the dial as a Windows Radial Controller over USB and BLE.
+
+config ZMK_HIRES_DIAL_RADIAL_CONTROLLER_BLE_QUEUE_SIZE
+    int "Radial Controller BLE report queue size"
+    default 16
+    depends on ZMK_HIRES_DIAL_RADIAL_CONTROLLER && ZMK_BLE
+
+module = ZMK_HIRES_DIAL
+module-str = zmk_hires_dial
+source "subsys/logging/Kconfig.template.log_config"
+
+endif
+
+config USB_HID_DEVICE_COUNT
+    default 2 if ZMK_HIRES_DIAL_RADIAL_CONTROLLER && ZMK_USB

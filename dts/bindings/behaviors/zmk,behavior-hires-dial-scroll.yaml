@@ -1,0 +1,25 @@
+# Copyright (c) 2026 sekigon-gonnoc
+# SPDX-License-Identifier: MIT
+
+description: Scaled high-resolution dial wheel behavior
+
+compatible: "zmk,behavior-hires-dial-scroll"
+
+properties:
+  "#sensor-binding-cells":
+    type: int
+    required: true
+    const: 2
+  sensor:
+    type: phandle
+    required: true
+    description: PAT912x high-resolution dial sensor providing counts-per-revolution.
+  input-code:
+    type: int
+    required: true
+
+sensor-binding-cells:
+  # ZMK's sensor keymap parser reads these canonical cell names into
+  # zmk_behavior_binding.param1 and param2.
+  - param1
+  - param2

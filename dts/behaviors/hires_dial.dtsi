@@ -1,0 +1,33 @@
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ hires_dial_encoder: hires_dial_encoder {
+            compatible = "zmk,behavior-hires-dial-encoder";
+            #sensor-binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        /omit-if-no-ref/ hires_dial_scroll: hires_dial_scroll {
+            compatible = "zmk,behavior-hires-dial-scroll";
+            #sensor-binding-cells = <2>;
+            input-code = <INPUT_REL_WHEEL>;
+        };
+
+        /omit-if-no-ref/ hires_dial_hscroll: hires_dial_hscroll {
+            compatible = "zmk,behavior-hires-dial-scroll";
+            #sensor-binding-cells = <2>;
+            input-code = <INPUT_REL_HWHEEL>;
+        };
+
+        /omit-if-no-ref/ hires_dial_radial_controller: hires_dial_radial_controller {
+            compatible = "zmk,behavior-hires-dial-radial-controller";
+            #sensor-binding-cells = <2>;
+        };
+
+        /omit-if-no-ref/ hires_dial_radial_controller_button: hires_dial_radial_controller_button {
+            compatible = "zmk,behavior-hires-dial-radial-controller-button";
+            #binding-cells = <0>;
+        };
+    };
+};

@@ -1,0 +1,22 @@
+# Copyright (c) 2026 sekigon-gonnoc
+# SPDX-License-Identifier: MIT
+
+description: Windows Radial Controller rotation behavior
+
+compatible: "zmk,behavior-hires-dial-radial-controller"
+
+properties:
+  "#sensor-binding-cells":
+    type: int
+    required: true
+    const: 2
+  sensor:
+    type: phandle
+    required: true
+    description: PAT912x high-resolution dial sensor providing counts-per-revolution.
+
+sensor-binding-cells:
+  # param1 is the input-motion scale and param2 is the output-motion scale.
+  # ZMK requires these canonical names when populating behavior parameters.
+  - param1
+  - param2

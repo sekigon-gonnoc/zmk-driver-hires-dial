@@ -1,0 +1,12 @@
+# Copyright (c) 2026 sekigon-gonnoc
+# SPDX-License-Identifier: MIT
+
+description: Windows Radial Controller button behavior
+
+compatible: "zmk,behavior-hires-dial-radial-controller-button"
+
+properties:
+  "#binding-cells":
+    type: int
+    required: true
+    const: 0

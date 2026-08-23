@@ -1,0 +1,42 @@
+# Copyright 2024 Google LLC
+# SPDX-License-Identifier: Apache-2.0
+
+description: High-resolution dial
+
+compatible: "sekigon,hires-dial"
+
+include: i2c-device.yaml
+
+properties:
+  motion-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO connected to the active-low motion output.
+
+  power-gpios:
+    type: phandle-array
+    description: Optional sensor power control GPIO.
+
+  res-cpi:
+    type: int
+    default: 1275
+    description: Sensor resolution in counts per inch (CPI). Maximum value is 1275.
+
+  counts-per-revolution:
+    type: int
+    required: true
+    description: Accumulated PAT912x Y counts for one complete dial revolution.
+
+  motion-read-interval-ms:
+    type: int
+    default: 8
+    description: Delay between motion reads while the active-low MOTION signal remains asserted.
+
+  invert:
+    type: boolean
+
+  sleep1-enable:
+    type: boolean
+
+  sleep2-enable:
+    type: boolean
