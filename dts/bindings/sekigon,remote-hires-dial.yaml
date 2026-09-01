@@ -1,0 +1,8 @@
+description: Virtual high-resolution dial sensor used to receive split sensor events on central.
+
+compatible: "sekigon,remote-hires-dial"
+
+properties:
+  counts-per-revolution:
+    type: int
+    required: true

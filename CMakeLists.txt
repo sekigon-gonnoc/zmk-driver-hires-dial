@@ -2,6 +2,7 @@ zephyr_library()
 
 zephyr_library_include_directories(include)
 zephyr_library_sources_ifdef(CONFIG_ZMK_HIRES_DIAL src/hires_dial.c)
+zephyr_library_sources(src/remote_hires_dial_sensor.c)
 
 if((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   zephyr_library_sources_ifdef(CONFIG_ZMK_HIRES_DIAL src/behaviors/behavior_hires_dial_encoder.c)

@@ -1,7 +1,6 @@
 menuconfig ZMK_HIRES_DIAL
     bool "High-resolution ZMK dial"
     default y
-    depends on DT_HAS_SEKIGON_HIRES_DIAL_ENABLED
     depends on SENSOR && GPIO
     select I2C
     help
