@@ -18,6 +18,8 @@
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/sys/util.h>
 
+#include <zmk/hires_dial/hires_dial.h>
+
 LOG_MODULE_REGISTER(zmk_hires_dial, CONFIG_ZMK_HIRES_DIAL_LOG_LEVEL);
 
 #define PAT912X_PRODUCT_ID1 0x00
@@ -59,9 +61,24 @@ struct pat912x_hires_dial_data {
     int32_t pending_counts;
     int32_t sample_counts;
     int64_t cumulative_counts;
+    uint32_t counts_per_revolution;
     sensor_trigger_handler_t trigger_handler;
     const struct sensor_trigger *trigger;
 };
+
+int zmk_hires_dial_set_counts_per_revolution(const struct device *dev,
+                                             uint32_t counts_per_revolution) {
+    if (!dev || counts_per_revolution == 0 || counts_per_revolution > UINT16_MAX ||
+        !device_is_ready(dev)) {
+        return -EINVAL;
+    }
+
+    struct pat912x_hires_dial_data *data = dev->data;
+    k_spinlock_key_t key = k_spin_lock(&data->lock);
+    data->counts_per_revolution = counts_per_revolution;
+    k_spin_unlock(&data->lock, key);
+    return 0;
+}
 
 static inline int32_t sign_extend_12(uint32_t value) { return (int32_t)(value << 20) >> 20; }
 
@@ -247,18 +264,19 @@ static int pat912x_sample_fetch(const struct device *dev, enum sensor_channel ch
 
 static int pat912x_channel_get(const struct device *dev, enum sensor_channel chan,
                                struct sensor_value *value) {
-    const struct pat912x_hires_dial_config *cfg = dev->config;
     struct pat912x_hires_dial_data *data = dev->data;
     if (chan != SENSOR_CHAN_ROTATION) {
         return -ENOTSUP;
     }
 
-    int64_t microdegrees =
-        ((int64_t)data->sample_counts * 360000000LL) / cfg->counts_per_revolution;
+    k_spinlock_key_t key = k_spin_lock(&data->lock);
+    int32_t sample_counts = data->sample_counts;
+    uint32_t counts_per_revolution = data->counts_per_revolution;
+    k_spin_unlock(&data->lock, key);
+    int64_t microdegrees = ((int64_t)sample_counts * 360000000LL) / counts_per_revolution;
     value->val1 = microdegrees / 1000000LL;
     value->val2 = microdegrees % 1000000LL;
-    LOG_DBG("Channel rotation: counts=%d value=(%d, %d)", data->sample_counts, value->val1,
-            value->val2);
+    LOG_DBG("Channel rotation: counts=%d value=(%d, %d)", sample_counts, value->val1, value->val2);
     return 0;
 }
 
@@ -308,6 +326,7 @@ static int pat912x_init(const struct device *dev) {
     }
 
     data->dev = dev;
+    data->counts_per_revolution = cfg->counts_per_revolution;
     k_work_init_delayable(&data->motion_work, pat912x_motion_work_handler);
 
     err = gpio_pin_configure_dt(&cfg->motion_gpio, GPIO_INPUT);
