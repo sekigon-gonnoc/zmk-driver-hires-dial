@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+
+description: High-resolution dial sensor source with per-layer dynamic bindings
+compatible: "sekigon,hires-dial-source"
+
+properties:
+  source-name:
+    type: string
+    required: true
+  label:
+    type: string
+    required: true
+  sensor:
+    type: phandle
+    required: true
+  sensor-index:
+    type: int
+    required: true
+  input-unit:
+    type: string
+    required: true
+    enum: [microdegree, tick]
+  target-role:
+    type: string
+    required: true

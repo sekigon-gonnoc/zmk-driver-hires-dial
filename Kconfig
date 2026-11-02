@@ -34,6 +34,15 @@ config ZMK_HIRES_DIAL_RADIAL_CONTROLLER_BLE_QUEUE_SIZE
     default 16
     depends on ZMK_HIRES_DIAL_RADIAL_CONTROLLER && ZMK_BLE
 
+config ZMK_HIRES_DIAL_DYNAMIC_BINDINGS
+    bool "Dynamic high-resolution dial bindings"
+    depends on ZMK_DYNAMIC_SETTINGS && ZMK_STUDIO_RPC && ZMK_BEHAVIOR_LOCAL_IDS
+    depends on DT_HAS_SEKIGON_HIRES_DIAL_SOURCE_ENABLED
+    default y
+    select ZMK_DYNAMIC_ENCODER
+    help
+      Enable per-layer runtime bindings for high-resolution dial sensor sources.
+
 module = ZMK_HIRES_DIAL
 module-str = zmk_hires_dial
 source "subsys/logging/Kconfig.template.log_config"

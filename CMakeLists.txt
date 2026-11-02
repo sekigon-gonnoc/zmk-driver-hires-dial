@@ -4,6 +4,13 @@ zephyr_library_include_directories(include)
 if(CONFIG_ZMK_HIRES_DIAL)
   zephyr_library_sources(src/hires_dial.c)
   zephyr_library_sources_ifdef(CONFIG_ZMK_DYNAMIC_SETTINGS src/hires_dial_settings.c)
+  if(CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS)
+    zephyr_library_sources(src/hires_dial_dynamic.c)
+  endif()
+  if(CONFIG_ZMK_DYNAMIC_SETTINGS_SCHEMA AND CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS)
+    set_property(GLOBAL APPEND PROPERTY DYNAMIC_SETTINGS_SCHEMA_CONTRIBUTORS
+      "${CMAKE_CURRENT_SOURCE_DIR}/scripts/settings_schema.py")
+  endif()
 endif()
 zephyr_library_sources(src/remote_hires_dial_sensor.c)
 

@@ -8,12 +8,14 @@
 CONFIG_ZMK_HIRES_DIAL=y
 CONFIG_ZMK_HIRES_DIAL_SCROLL=y
 CONFIG_ZMK_HIRES_DIAL_RADIAL_CONTROLLER=y
+CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS=y
 ```
 
 - `CONFIG_ZMK_HIRES_DIAL` はモジュールとエンコーダbehaviorを有効にします。（必須）
 - `CONFIG_ZMK_HIRES_DIAL_SCROLL` は縦・横ホイールbehaviorを有効にします。（オプション）
 - `CONFIG_ZMK_HIRES_DIAL_RADIAL_CONTROLLER` はUSB/BLEのWindows Radial Controllerを有効にします。（オプション）
   - ペアリング済みのキーボードのファームに新規追加する場合は再ペアリングが必要になる場合があります。
+- `CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS` はStudioからレイヤごとの割り当てを変更できるようにします。（オプション）
 
 ## デバイスツリー
 
@@ -99,3 +101,21 @@ Radial Controllerの押下は通常のキーポジションへ
 Scroll, HScroll, Radial Controllerの2パラメータは `INPUT_MOTION OUTPUT_MOTION` です。
 `<&hires_dial_radial_controller 4 1>` は物理回転を1/4に縮小し、`<2 1>` は1/2、
 `<1 1>` は等倍で処理します。
+
+## Studioでの動的割り当て
+
+動的割り当てには、`sekigon,hires-dial-source` を使ってダイヤルを宣言します。
+初期値は各レイヤの `sensor-bindings` から読み取り、Studio側でこのダイヤル専用の
+設定グループとして編集します。
+
+```dts
+dial_runtime: dial_runtime {
+    compatible = "sekigon,hires-dial-source";
+    source-name = "dial";
+    label = "Dial";
+    sensor = <&hires_dial>;
+    sensor-index = <0>;
+    input-unit = "microdegree";
+    target-role = "keyboard-right";
+};
+```

@@ -16,8 +16,8 @@
 #include <zmk/sensors.h>
 #include <zmk/virtual_key_position.h>
 
-#if IS_ENABLED(CONFIG_ZMK_DYNAMIC_ENCODER)
-#include <zmk/dynamic_encoder/encoder.h>
+#if IS_ENABLED(CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS)
+#include <zmk/hires_dial/dynamic.h>
 #endif
 
 #include <zmk/hires_dial/conversion.h>
@@ -79,18 +79,18 @@ static int process(struct zmk_behavior_binding *binding, struct zmk_behavior_bin
 
     struct zmk_behavior_binding output = triggers > 0 ? cfg->cw : cfg->ccw;
     output.param1 = triggers > 0 ? binding->param1 : binding->param2;
-#if IS_ENABLED(CONFIG_ZMK_DYNAMIC_ENCODER)
+#if IS_ENABLED(CONFIG_ZMK_HIRES_DIAL_DYNAMIC_BINDINGS)
     struct zmk_behavior_binding cw = cfg->cw;
     struct zmk_behavior_binding ccw = cfg->ccw;
     uint8_t cw_action;
     uint8_t ccw_action;
-    if (dynamic_hires_dial_encoder_bindings_lookup(sensor, event.layer, &cw, &cw_action, &ccw,
-                                                   &ccw_action)) {
+    if (zmk_hires_dial_dynamic_encoder_bindings_lookup(sensor, event.layer, &cw, &cw_action, &ccw,
+                                                       &ccw_action)) {
         const uint8_t action = triggers > 0 ? cw_action : ccw_action;
-        if (action == DYNAMIC_HIRES_DIAL_ENCODER_ACTION_NONE) {
+        if (action == ZMK_HIRES_DIAL_DYNAMIC_ACTION_NONE) {
             return ZMK_BEHAVIOR_OPAQUE;
         }
-        if (action == DYNAMIC_HIRES_DIAL_ENCODER_ACTION_BEHAVIOR) {
+        if (action == ZMK_HIRES_DIAL_DYNAMIC_ACTION_BEHAVIOR) {
             output = triggers > 0 ? cw : ccw;
         }
     }
